@@ -1,0 +1,104 @@
+<h1>Play Rock, Paper, Scissors</h1>
+
+<div class="row">
+	<button type="button" class="play-rock btn btn-primary">Play Rock </button>
+	<button type="button" class="play-paper btn btn-secondary">Play Paper</button>
+	<button type="button" class="play-scissors btn btn-success">Play Scissors</button>
+</div>
+
+<div class="row">
+	<h3 class="user">You played ... </h3>
+</div>
+<div class="row">
+	<h3 class="computer">Computer played ... </h3>
+</div>
+<div class="row">
+	<h3 class="result">You ... </h3>
+</div>
+
+<div class="row">
+	<h3 class="wins">Number of wins ... </h3>
+</div>
+<div class="row">
+	<h3 class="ties">Number of ties ... </h3>
+</div>
+<div class="row">
+	<h3 class="loses">Number of loses ... </h3>
+</div>
+
+<script>
+
+$('.play-rock').click(function (e) {
+	finishGame("rock");
+});
+$('.play-paper').click(function (e) {
+	finishGame("paper");
+});
+$('.play-scissors').click(function (e) {
+	finishGame("scissors");
+});
+
+function finishGame(userPlay) {
+	// alert('User played:  ' + userPlay);
+	$('.user').text('You played ' + userPlay);
+
+	let computerPlay = getComputerMove();
+	$('.computer').text('Computer played ' + computerPlay);
+
+	let result=getResult(userPlay,computerPlay);
+	// alert('You:  ' + result);
+	$('.result').text('You ' + result)
+
+	record_result(result);
+}
+
+function getComputerMove() {
+	let plays = ["rock", "paper", "scissors"];
+	return plays[Math.floor(Math.random()*plays.length)];
+}
+
+function record_result(result) {
+	$.ajax({
+		url: "/update_results/" + result,
+		type: "GET",
+		success: function (outcomes) {
+	    $('.wins').text('Number of wins: ' + outcomes.wins);
+	    $('.ties').text('Number of ties: ' + outcomes.ties);
+	    $('.loses').text('Number of loses: ' + outcomes.loses);
+			}
+		});
+	};
+
+	function getResult(userPlay,computerPlay) {
+		let result;
+		if (userPlay=="rock") {
+			if (computerPlay=="rock") {
+				result='tie'
+			} else if (computerPlay=="paper") {
+				result='lose'
+			} else {
+				result='win'
+			}
+		}
+		if (userPlay=="paper") {
+			if (computerPlay=="rock") {
+				result='win'
+			} else if (computerPlay=="paper") {
+				result='tie'
+			} else {
+				result='lose'
+			}
+		}
+		if (userPlay=="scissors") {
+			if (computerPlay=="rock") {
+				result='lose'
+			} else if (computerPlay=="paper") {
+				result='win'
+			} else {
+				result='tie'
+			}
+		}
+		return result;
+	}
+
+	</script>
